@@ -1,5 +1,6 @@
 package com.noom.interview.fullstack.sleep.service;
 
+import com.noom.interview.fullstack.sleep.exception.AppException;
 import com.noom.interview.fullstack.sleep.model.Feeling;
 import com.noom.interview.fullstack.sleep.model.SleepDataAverageResponse;
 import com.noom.interview.fullstack.sleep.model.SleepDataInput;
@@ -25,7 +26,7 @@ public class SleepService {
 
     public SleepDataResponse getLastNight(UUID userUuid){
         var user = userService.getUser(userUuid);
-        var sleepDataEntity = sleepRepository.findByUserIdAndDateOfSleep(user.getId(), LocalDate.now()).orElseThrow(); //TODO: handle exception
+        var sleepDataEntity = sleepRepository.findByUserIdAndDateOfSleep(user.getId(), LocalDate.now()).orElseThrow(() -> new AppException("Last night log not found."));
         return SleepDataMapper.fromEntity(sleepDataEntity);
     }
 
@@ -33,14 +34,19 @@ public class SleepService {
         var rangeStart = LocalDate.now().minusDays(30);
         var rangeEnd = LocalDate.now();
         var user = userService.getUser(userUuid);
-        var sleepDataEntities = sleepRepository.findAllByUserIdAndDateOfSleepBetween(user.getId(), rangeStart, rangeEnd); // TODO: handle enpty list
+        var sleepDataEntities = sleepRepository.findAllByUserIdAndDateOfSleepBetween(user.getId(), rangeStart, rangeEnd);
+
+        if(sleepDataEntities.isEmpty()) throw new AppException("No sleep logs in last 30 days.");
+
+        var averageTimeInBed = getAverageTimeInBed(sleepDataEntities);
         var averageTimeInBedStart = averageTimeInBedInstant(sleepDataEntities.stream()
                 .map(SleepDataEntity::getTimeInBedStart).collect(Collectors.toList()));
         var averageTimeInBedEnd = averageTimeInBedInstant(sleepDataEntities.stream()
                 .map(SleepDataEntity::getTimeInBedEnd).collect(Collectors.toList()));
         return new SleepDataAverageResponse(rangeStart,
                 rangeEnd,
-                getAverageTimeInBed(sleepDataEntities),
+                averageTimeInBed,
+                SleepDataMapper.convertToReadableTime(averageTimeInBed),
                 averageTimeInBedStart,
                 averageTimeInBedEnd,
                 feelingFrequency(sleepDataEntities)
@@ -48,17 +54,19 @@ public class SleepService {
     }
 
     public SleepDataResponse logSleepData(UUID userUuid, SleepDataInput sleepData){
-        // TODO: What if already exist?
-        var entity = SleepDataMapper.toEntity(sleepData, userService.getUser(userUuid));
+        var user = userService.getUser(userUuid);
+        if(sleepRepository.existsByUserIdAndDateOfSleep(user.getId(), LocalDate.now())) throw new AppException("Sleep log already exists for last night.");
+        var entity = SleepDataMapper.toEntity(sleepData, user);
         return SleepDataMapper.fromEntity(sleepRepository.save(entity));
     }
 
-    private long getAverageTimeInBed(List<SleepDataEntity> sleepDatas){
-        var average = sleepDatas.stream()
+    private Duration getAverageTimeInBed(List<SleepDataEntity> sleepDatas){
+        var averageSeconds = sleepDatas.stream()
                 .map(SleepDataEntity::getTimeInBed)
                 .mapToLong(Duration::toSeconds)
-                .average(); //TODO: handle exception
-        return (long) average.orElse(0);
+                .average()
+                .orElseThrow(() -> new AppException("Couldn't calculate average time in bed."));
+        return Duration.ofSeconds(Math.round(averageSeconds));
     }
 
     private LocalTime averageTimeInBedInstant(List<Instant> instants) {

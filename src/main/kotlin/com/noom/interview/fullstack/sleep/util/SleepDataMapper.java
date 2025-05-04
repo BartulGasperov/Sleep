@@ -20,6 +20,15 @@ public class SleepDataMapper {
     }
 
     public static SleepDataResponse fromEntity(SleepDataEntity entity){
-        return new SleepDataResponse(entity.getDateOfSleep(), entity.getTimeInBedStart(), entity.getTimeInBedEnd(), entity.getTimeInBed().toMinutes(), entity.getFeeling());
+        return new SleepDataResponse(entity.getDateOfSleep(),
+                entity.getTimeInBedStart(),
+                entity.getTimeInBedEnd(),
+                entity.getTimeInBed(),
+                convertToReadableTime(entity.getTimeInBed()),
+                entity.getFeeling());
+    }
+
+    public static String convertToReadableTime(Duration duration){
+        return String.format("%s hours, %s minutes", duration.toHoursPart(), duration.toMinutesPart());
     }
 }
