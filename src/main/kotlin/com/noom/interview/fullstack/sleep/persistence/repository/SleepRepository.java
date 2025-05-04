@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface SleepRepository extends JpaRepository<SleepDataEntity, Integer> {
     Optional<SleepDataEntity> findByUserIdAndDateOfSleep(int userId, LocalDate dateOfSleep);
+    boolean existsByUserIdAndDateOfSleep(int userId, LocalDate dateOfSleep);
     List<SleepDataEntity> findAllByUserIdAndDateOfSleepBetween(int userId, LocalDate startDate, LocalDate endDate);
 }

@@ -15,10 +15,3 @@ CREATE TABLE sleep_data (
     feeling VARCHAR(20) NOT NULL,
     CONSTRAINT fk_sleep_data_sleep_user FOREIGN KEY (user_id) REFERENCES sleep_user(id)
 );
-
-INSERT INTO sleep_user (id, uuid, name)
-VALUES (
-    1,
-    'b7e2a7a5-7f5e-42b9-8d93-36df4a7df5c3',
-    'Test User'
-);

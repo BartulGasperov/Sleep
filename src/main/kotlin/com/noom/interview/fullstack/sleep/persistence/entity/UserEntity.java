@@ -1,7 +1,6 @@
 package com.noom.interview.fullstack.sleep.persistence.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -9,6 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "sleep_user")
 public class UserEntity {
