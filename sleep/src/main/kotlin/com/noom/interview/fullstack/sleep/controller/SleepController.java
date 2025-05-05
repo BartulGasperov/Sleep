@@ -18,7 +18,6 @@ public class SleepController {
 
     private final SleepService sleepService;
 
-    // TODO: validate requests
     @GetMapping
     public ResponseEntity<SleepDataResponse> getLastNight(@NotNull @RequestHeader(name="userId") UUID userId){
         return ResponseEntity.ok(sleepService.getLastNight(userId));

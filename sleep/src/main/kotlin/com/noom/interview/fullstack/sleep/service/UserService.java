@@ -13,7 +13,6 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
 
-    //TODO: get only userID
     public UserEntity getUser(UUID userUuid){
         return userRepository.findByUuid(userUuid).orElseThrow(() -> new AppException(String.format("User with id: %s not found.", userUuid)));
     }

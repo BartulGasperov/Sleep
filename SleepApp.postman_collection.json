@@ -1,0 +1,104 @@
+{
+	"info": {
+		"_postman_id": "58f605c4-39e9-40b8-a53a-3564b210c8df",
+		"name": "SleepApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44658280"
+	},
+	"item": [
+		{
+			"name": "GetAverages",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "userId",
+						"value": "b7e2a7a5-7f5e-42b9-8d93-36df4a7df5c3",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/sleep/average",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sleep",
+						"average"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLastNight",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "userId",
+						"value": "b7e2a7a5-7f5e-42b9-8d93-36df4a7df5c3",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/sleep",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sleep"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateNewSleepLog",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "userId",
+						"value": "b7e2a7a5-7f5e-42b9-8d93-36df4a7df5c3",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"timeInBedStart\": \"2025-05-03T21:30:00Z\",\r\n  \"timeInBedEnd\": \"2025-05-04T02:30:00Z\",\r\n  \"feeling\": \"BAD\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/sleep",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sleep"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -74,7 +74,7 @@ public class SleepService {
         double sumCos = 0;
 
         for (Instant instant : instants) {
-            LocalTime time = instant.atZone(ZoneId.of("Europe/Zagreb")).toLocalTime(); //TODO: maybe expose timezone through headers to simulate user
+            LocalTime time = instant.atZone(ZoneId.of("Europe/Zagreb")).toLocalTime();
             double angle = 2 * Math.PI * time.toSecondOfDay() / (24 * 60 * 60);
 
             sumSin += Math.sin(angle);
